@@ -3,7 +3,7 @@ import {setAlert} from './alert'
 
 import {GET_PROFILE, PROFILE_ERROR} from './types';
 
-//get current user profile
+//get current users profile
 
 export const getCurrentProfile = () => async dispatch => {
     try {
