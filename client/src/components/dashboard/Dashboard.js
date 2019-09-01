@@ -2,13 +2,16 @@ import React, {useEffect, Fragment} from 'react';
 import {Link} from 'react-router-dom';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
-import {getCurrentProfile} from '../../actions/profile';
 import Spinner from '../layout/Spinner';
+import DashboardActions from './DashboardActions';
+import Experience from './Experience';
+import Education from './Education';
+import {getCurrentProfile, deleteAccount} from '../../actions/profile';
 
-function Dashboard({getCurrentProfile,auth:{user}, profile:{profile, loading}}) {
+function Dashboard({getCurrentProfile,deleteAccount,auth:{user}, profile:{profile, loading}}) {
     useEffect(() => {
         getCurrentProfile()
-    },[])
+    },[getCurrentProfile])
     return loading && profile === null ? (
       <Spinner />
     ) : (
@@ -18,7 +21,15 @@ function Dashboard({getCurrentProfile,auth:{user}, profile:{profile, loading}}) 
           <i className="fas fa-user">Welcome {user && user.name}</i>
         </p>
         {profile !== null ? (
-          <Fragment>has</Fragment>
+          <Fragment>
+              <DashboardActions/>
+              <Experience experience={profile.expirience}/>
+              <Education education={profile.education}/>
+
+              <div className="my-2">
+              <button onClick={() => deleteAccount()} className='btn btn-danger'><i className="fas fa-user-minus">Delete My Account</i></button>
+              </div>
+          </Fragment>
         ) : (
           <Fragment>
               <p>You have not setup a profile yet, please add some info</p>
@@ -35,10 +46,11 @@ Dashboard.propTypes = {
 getCurrentProfile:PropTypes.func.isRequired,
 auth:PropTypes.object.isRequired,
 profile:PropTypes.object.isRequired,
+deleteAccount:PropTypes.func.isRequired,
 }
 const mapStateToProps = state => ({
     auth:state.auth,
     profile:state.profile
 })
-export default connect(mapStateToProps, {getCurrentProfile})(Dashboard)
+export default connect(mapStateToProps, {getCurrentProfile, deleteAccount})(Dashboard)
 
